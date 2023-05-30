@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -16,7 +17,7 @@ class MyTcpListener
         try
         {
             // Set the TcpListener on port 13000.
-            Int32 port = 13000;
+            Int32 port = 1965;
             IPAddress localAddr = IPAddress.Parse("127.0.0.1");
 
             // TcpListener server = new TcpListener(port);
@@ -30,41 +31,37 @@ class MyTcpListener
             String data = null;
 
             // Enter the listening loop.
-            while(true)
+            while (true)
             {
-                Console.Write("Waiting for a connection... ");
+                    Console.Write("Waiting for a connection... ");
 
-                // Perform a blocking call to accept requests.
-                // You could also use server.AcceptSocket() here.
-                using TcpClient client = server.AcceptTcpClient();
-                Console.WriteLine("Connected!");
+                    // Perform a blocking call to accept requests.
+                    // You could also use server.AcceptSocket() here.
+                    using TcpClient client = server.AcceptTcpClient();
+                    Console.WriteLine("Connected!");
+                    SslStream sslStream = new SslStream(
+                        client.GetStream(), false);
+                    try
+                    {
+                        sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false,
+                            checkCertificateRevocation: true);
 
-                data = null;
+                        byte[] message = Encoding.UTF8.GetBytes("Hello world!<EOF>");
 
-                // Get a stream object for reading and writing
-                NetworkStream stream = client.GetStream();
-
-                int i;
-
-                // Loop to receive all the data sent by the client.
-                while((i = stream.Read(bytes, 0, bytes.Length))!=0)
-                {
-                    // Translate data bytes to a ASCII string.
-                    data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                    Console.WriteLine("Received: {0}", data);
-
-                    // Process the data sent by the client.
-                    data = data.ToUpper();
-
-                    byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
-
-                    // Send back a response.
-                    stream.Write(msg, 0, msg.Length);
-                    Console.WriteLine("Sent: {0}", data);
-                }
+                        sslStream.Write(message);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("error:");
+                        Console.WriteLine(e);
+                    }
+                    finally
+                    {
+                        sslStream.Close();
+                    }
             }
         }
-        catch(SocketException e)
+        catch (SocketException e)
         {
             Console.WriteLine("SocketException: {0}", e);
         }
