@@ -10,8 +10,10 @@ class MyTcpListener
 {
     public static void Main()
     {
-        var certPath = "cert/domain.crt";
-        var serverCertificate = X509Certificate.CreateFromCertFile(certPath);
+        var certPath = "cert/mycert.pfx";
+
+        X509Certificate2 serverCertificate = new X509Certificate2(certPath,"asdf");
+
 
         TcpListener server = null;
         try
