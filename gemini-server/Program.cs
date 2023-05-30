@@ -2,12 +2,16 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 class MyTcpListener
 {
     public static void Main()
     {
+        var certPath = "cert/domain.crt";
+        var serverCertificate = X509Certificate.CreateFromCertFile(certPath);
+
         TcpListener server = null;
         try
         {
