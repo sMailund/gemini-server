@@ -9,10 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="cert" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Remove="cert\domain.crt" />
       <Resource Include="cert\domain.crt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>

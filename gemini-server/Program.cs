@@ -10,6 +10,7 @@ class MyTcpListener
 {
     public static void Main()
     {
+        // TODO https://serverfault.com/questions/611120/failed-tls-handshake-does-not-contain-any-ip-sans
         var certPath = "cert/mycert.pfx";
 
         X509Certificate2 serverCertificate = new X509Certificate2(certPath,"asdf");
@@ -47,6 +48,8 @@ class MyTcpListener
                     {
                         sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false,
                             checkCertificateRevocation: true);
+                        
+                        Console.WriteLine("authenticated");
 
                         byte[] message = Encoding.UTF8.GetBytes("Hello world!<EOF>");
 
