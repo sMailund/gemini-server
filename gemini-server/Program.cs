@@ -51,7 +51,13 @@ class MyTcpListener
                         
                         Console.WriteLine("authenticated");
 
-                        byte[] message = Encoding.UTF8.GetBytes("Hello world!<EOF>");
+
+                        byte cr = 13;
+                        byte lf = 10;
+                        byte[] header = Encoding.UTF8.GetBytes("20 text/gemini; charset=utf-8\r\n");
+                        sslStream.Write(header);
+                        
+                        byte[] message = Encoding.UTF8.GetBytes("Hello world!");
 
                         sslStream.Write(message);
                     }
