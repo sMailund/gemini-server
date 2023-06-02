@@ -13,8 +13,8 @@ class MyTcpListener
         // TODO find solution to EOF problem
         var certPath = "cert/mycert.pfx";
 
-        X509Certificate2 serverCertificate = new X509Certificate2(certPath,"asdf");
-
+        X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
+        int reloads = 0;
 
         TcpListener server = null;
         try
@@ -29,37 +29,40 @@ class MyTcpListener
             // Start listening for client requests.
             server.Start();
 
-            // Buffer for reading data
-            Byte[] bytes = new Byte[256];
-            String data = null;
-
             // Enter the listening loop.
             while (true)
             {
-                    Console.Write("Waiting for a connection... ");
+                Console.Write("Waiting for a connection... ");
 
-                    // Perform a blocking call to accept requests.
-                    // You could also use server.AcceptSocket() here.
-                    using TcpClient client = server.AcceptTcpClient();
+                // Perform a blocking call to accept requests.
+                // You could also use server.AcceptSocket() here.
+                TcpClient client = server.AcceptTcpClient();
+                new Thread((() =>
+                {
+                    var readBuffer = new byte[1024];
+                    reloads++;
                     Console.WriteLine("Connected!");
+                    var stream = client.GetStream();
                     SslStream sslStream = new SslStream(
-                        client.GetStream(), false);
+                        stream, false);
                     try
                     {
                         sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false,
                             checkCertificateRevocation: true);
                         
+                        sslStream.Read(readBuffer, 0, 1024); 
+                        var request = Encoding.UTF8.GetString(readBuffer, 0, 1024)
+                            .Split("\r\n")[0];
+                        
+                        Console.WriteLine(request);
+                        
                         Console.WriteLine("authenticated");
 
-
-                        byte cr = 13;
-                        byte lf = 10;
                         byte[] header = Encoding.UTF8.GetBytes("20 text/gemini; charset=utf-8\r\n");
-                        sslStream.Write(header);
-                        
-                        byte[] message = Encoding.UTF8.GetBytes("Hello world!");
+                        byte[] message = Encoding.UTF8.GetBytes($"Hello world! {reloads}");
+                        var payload = header.Concat(message).ToArray();
+                        sslStream.Write(payload);
 
-                        sslStream.Write(message);
                     }
                     catch (Exception e)
                     {
@@ -68,8 +71,17 @@ class MyTcpListener
                     }
                     finally
                     {
+                        Console.WriteLine("closing stream");
                         sslStream.Close();
+                        sslStream.Flush();
                     }
+                    
+                    Console.WriteLine("closing client");
+                    stream.Close();
+                    stream.Dispose();
+                    client.Close();
+                    client.Dispose();
+                })).Start();
             }
         }
         catch (SocketException e)
