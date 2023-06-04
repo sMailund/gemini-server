@@ -1,16 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Net;
+﻿using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using gemini_server;
 
 class MyTcpListener
 {
+    
     public static void Main()
     {
         // TODO find solution to EOF problem
+        
         var certPath = "cert/mycert.pfx";
 
         X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
@@ -28,6 +29,10 @@ class MyTcpListener
 
             // Start listening for client requests.
             server.Start();
+
+            var requestHandler = new RequestHandler();
+
+            requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
 
             // Enter the listening loop.
             while (true)
@@ -51,15 +56,33 @@ class MyTcpListener
                             checkCertificateRevocation: true);
                         
                         sslStream.Read(readBuffer, 0, 1024); 
-                        var request = Encoding.UTF8.GetString(readBuffer, 0, 1024)
+                        var uriString = Encoding.UTF8.GetString(readBuffer, 0, 1024)
                             .Split("\r\n")[0];
                         
-                        Console.WriteLine(request);
+                        Console.WriteLine(uriString);
+
+                        var uri = new Uri(uriString);
                         
                         Console.WriteLine("authenticated");
+                        Console.WriteLine(uri.LocalPath);
 
+                        var request = new Request()
+                        {
+                            Uri = uri
+                        };
+
+                        var response = requestHandler.HandleRequest(request);
+
+                        var body = "not found";
+                        if (response is SuccessResponse)
+                        {
+                            body = ((SuccessResponse) response).Body;
+                        }
+                        
                         byte[] header = Encoding.UTF8.GetBytes("20 text/gemini; charset=utf-8\r\n");
-                        byte[] message = Encoding.UTF8.GetBytes($"Hello world! {reloads}");
+                        
+                        byte[] message = Encoding.UTF8.GetBytes(body);
+                        
                         var payload = header.Concat(message).ToArray();
                         sslStream.Write(payload);
 
@@ -96,4 +119,5 @@ class MyTcpListener
         Console.WriteLine("\nHit enter to continue...");
         Console.Read();
     }
+
 }
