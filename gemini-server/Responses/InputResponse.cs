@@ -9,7 +9,7 @@ public class InputResponse : IResponse
    
    public string Prompt { get; init; }
    
-   public int GetStatusCode() => 10;
+   public virtual int GetStatusCode() => 10;
 
    public string GetMeta() => Prompt;
 }
