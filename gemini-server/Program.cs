@@ -34,6 +34,7 @@ class MyTcpListener
             var requestHandler = new RequestHandler();
 
             requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
+            requestHandler.RegisterHandler("/input", req => new InputResponse("test input"));
 
             // Enter the listening loop.
             while (true)
@@ -65,7 +66,8 @@ class MyTcpListener
                         var uri = new Uri(uriString);
                         
                         Console.WriteLine("authenticated");
-                        Console.WriteLine(uri.LocalPath);
+                        Console.WriteLine("path: " + uri.LocalPath);
+                        Console.WriteLine("query: " + uri.Query);
 
                         var request = new Request()
                         {
