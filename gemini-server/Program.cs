@@ -73,13 +73,13 @@ class MyTcpListener
 
                         var response = requestHandler.HandleRequest(request);
 
-                        var body = "not found";
+                        var body = "";
                         if (response is SuccessResponse)
                         {
                             body = ((SuccessResponse) response).Body;
-                        }
+                        } 
                         
-                        byte[] header = Encoding.UTF8.GetBytes("20 text/gemini; charset=utf-8\r\n");
+                        byte[] header = Encoding.UTF8.GetBytes($"{response.GetStatusCode()} {response.GetMeta()}\r\n");
                         
                         byte[] message = Encoding.UTF8.GetBytes(body);
                         

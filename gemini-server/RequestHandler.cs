@@ -2,20 +2,20 @@ namespace gemini_server;
 
 public class RequestHandler
 {
-    private Dictionary<string, Func<Request, Response>> _handlers = new();
+    private Dictionary<string, Func<Request, IResponse>> _handlers = new();
     
-    public void RegisterHandler(string path, Func<Request, Response> handler)
+    public void RegisterHandler(string path, Func<Request, IResponse> handler)
     {
         _handlers[path] = handler;
     }
 
-    public Response HandleRequest(Request request)
+    public IResponse HandleRequest(Request request)
     {
         var handler = _handlers.GetValueOrDefault(request.Uri.LocalPath);
 
         if (handler == null)
         {
-            return new SuccessResponse("not found"); // todo fix not found
+            return new NotFoundResponse();
         }
         
         return handler(request);
