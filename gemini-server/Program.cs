@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using gemini_server;
+using gemini_server.Responses;
 
 class MyTcpListener
 {

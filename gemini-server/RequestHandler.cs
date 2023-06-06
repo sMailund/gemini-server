@@ -1,3 +1,5 @@
+using gemini_server.Responses;
+
 namespace gemini_server;
 
 public class RequestHandler

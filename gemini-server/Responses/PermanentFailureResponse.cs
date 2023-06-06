@@ -1,4 +1,4 @@
-namespace gemini_server;
+namespace gemini_server.Responses;
 
 public class PermanentFailureResponse : IResponse
 {
