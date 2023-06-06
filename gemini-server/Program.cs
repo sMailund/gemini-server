@@ -11,8 +11,6 @@ class MyTcpListener
     
     public static void Main()
     {
-        // TODO find solution to EOF problem
-        
         var certPath = "cert/mycert.pfx";
 
         X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
