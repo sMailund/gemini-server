@@ -35,6 +35,9 @@ class MyTcpListener
 
             requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
             requestHandler.RegisterHandler("/input", req => new InputResponse("test input"));
+            requestHandler.RegisterHandler("/test-redirect", req => new RedirectResponse("/redirect-works"));
+            requestHandler.RegisterHandler("/redirect-works", request => new SuccessResponse("redirect works"));
+            
 
             // Enter the listening loop.
             while (true)
