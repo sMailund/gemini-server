@@ -1,24 +1,27 @@
 using System.Text;
 using gemini_server;
 using gemini_server.Responses;
+using HackerNews.Repositories;
 
 namespace HackerNews.Handlers;
 
-public class FrontPageHandler
+internal class FrontPageHandler
 {
+    private readonly IPostRepository _posts;
+
+    public FrontPageHandler(IPostRepository posts)
+    {
+        _posts = posts;
+    }
+
     public IResponse Handle(Request req)
     {
-        var posts = new List<Post>
-        {
-            new("This is a test post"),
-            new("This is another post"),
-        };
-
         var greeting = req.IsLoggedIn
             ? $"Welcome back, {req.UserName}!"
             : "Welcome to Gemtalk! Please log in to join the discussion.";
 
-        var formattedPosts = posts
+        var formattedPosts = _posts
+            .GetTopPosts()
             .Select(it => $"## {it.Title}");
 
         var sb = new StringBuilder()
