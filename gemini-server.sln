@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gemini-server", "gemini-server\gemini-server.csproj", "{B8DD7C3B-2E03-4BA4-AE60-E0F33EBD0E8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackerNews", "HackerNews\HackerNews.csproj", "{07E785F3-2CBE-4B1F-AA22-B47C67EF851F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{B8DD7C3B-2E03-4BA4-AE60-E0F33EBD0E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8DD7C3B-2E03-4BA4-AE60-E0F33EBD0E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8DD7C3B-2E03-4BA4-AE60-E0F33EBD0E8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07E785F3-2CBE-4B1F-AA22-B47C67EF851F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07E785F3-2CBE-4B1F-AA22-B47C67EF851F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07E785F3-2CBE-4B1F-AA22-B47C67EF851F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07E785F3-2CBE-4B1F-AA22-B47C67EF851F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
