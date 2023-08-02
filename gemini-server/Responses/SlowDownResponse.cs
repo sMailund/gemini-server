@@ -1,10 +1,10 @@
 namespace gemini_server.Responses;
 
-class SlowDown : TemporaryFailureResponse
+class SlowDownResponse : TemporaryFailureResponse
 {
     private int _retryTimeout;
 
-    public SlowDown(int retryTimeout)
+    public SlowDownResponse(int retryTimeout)
     {
         _retryTimeout = retryTimeout;
     }
