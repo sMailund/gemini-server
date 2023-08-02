@@ -14,7 +14,6 @@ class MyTcpListener
         var certPath = "cert/mycert.pfx";
 
         X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
-        int reloads = 0;
 
         TcpListener server = null;
         try
@@ -44,81 +43,9 @@ class MyTcpListener
 
                 // Perform a blocking call to accept requests.
                 // You could also use server.AcceptSocket() here.
-                TcpClient client = server.AcceptTcpClient();
-                new Thread((() =>
-                {
-                    var readBuffer = new byte[1024];
-                    reloads++;
-                    Console.WriteLine("Connected!");
-                    var stream = client.GetStream();
-                    SslStream sslStream = new SslStream(
-                        stream, false, ValidateCertificate);
-                    try
-                    {
-                        sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: true,
-                            checkCertificateRevocation: true);
-                        
-                        
-                        sslStream.Read(readBuffer, 0, 1024); 
-                        var uriString = Encoding.UTF8.GetString(readBuffer, 0, 1024)
-                            .Split("\r\n")[0];
-                        
-                        Console.WriteLine(uriString);
-
-                        var uri = new Uri(uriString);
-                        
-                        Console.WriteLine("authenticated");
-                        Console.WriteLine("path: " + uri.LocalPath);
-                        Console.WriteLine("query: " + uri.Query);
-
-                        
-                        // Check if the handshake was successful and the client certificate is available
-                        if (sslStream is { IsAuthenticated: true, RemoteCertificate: not null })
-                        {
-                            Console.WriteLine("reading client certificate...");
-                            var clientCertificate = new X509Certificate2(sslStream.RemoteCertificate);
-                            Console.WriteLine("Client certificate: " + clientCertificate.Subject);
-                        }
-
-                        var request = new Request()
-                        {
-                            Uri = uri
-                        };
-
-                        var response = requestHandler.HandleRequest(request);
-
-                        var body = "";
-                        if (response is SuccessResponse)
-                        {
-                            body = ((SuccessResponse) response).Body;
-                        } 
-                        
-                        byte[] header = Encoding.UTF8.GetBytes($"{response.GetStatusCode()} {response.GetMeta()}\r\n");
-                        
-                        byte[] message = Encoding.UTF8.GetBytes(body);
-                        
-                        var payload = header.Concat(message).ToArray();
-                        sslStream.Write(payload);
-
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("error:");
-                        Console.WriteLine(e);
-                    }
-                    finally
-                    {
-                        Console.WriteLine("closing stream");
-                        sslStream.Close();
-                        sslStream.Flush();
-                    }
-                    
-                    Console.WriteLine("closing client");
-                    stream.Close();
-                    stream.Dispose();
-                    client.Close();
-                    client.Dispose();
-                })).Start();
+                var client = server.AcceptTcpClient();
+                new Thread(() => HandleRequest(client, serverCertificate, requestHandler))
+                    .Start();
             }
         }
         catch (SocketException e)
@@ -133,7 +60,80 @@ class MyTcpListener
         Console.WriteLine("\nHit enter to continue...");
         Console.Read();
     }
-    
+
+    private static void HandleRequest(TcpClient client, X509Certificate2 serverCertificate, RequestHandler requestHandler)
+    {
+        var readBuffer = new byte[1024];
+        Console.WriteLine("Connected!");
+        var stream = client.GetStream();
+        SslStream sslStream = new SslStream(
+            stream, false, ValidateCertificate);
+        try
+        {
+            sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: true,
+                checkCertificateRevocation: true);
+
+
+            sslStream.Read(readBuffer, 0, 1024);
+            var uriString = Encoding.UTF8.GetString(readBuffer, 0, 1024)
+                .Split("\r\n")[0];
+
+            Console.WriteLine(uriString);
+
+            var uri = new Uri(uriString);
+
+            Console.WriteLine("authenticated");
+            Console.WriteLine("path: " + uri.LocalPath);
+            Console.WriteLine("query: " + uri.Query);
+
+
+            // Check if the handshake was successful and the client certificate is available
+            if (sslStream is { IsAuthenticated: true, RemoteCertificate: not null })
+            {
+                Console.WriteLine("reading client certificate...");
+                var clientCertificate = new X509Certificate2(sslStream.RemoteCertificate);
+                Console.WriteLine("Client certificate: " + clientCertificate.Subject);
+            }
+
+            var request = new Request()
+            {
+                Uri = uri
+            };
+
+            var response = requestHandler.HandleRequest(request);
+
+            var body = "";
+            if (response is SuccessResponse)
+            {
+                body = ((SuccessResponse)response).Body;
+            }
+
+            byte[] header = Encoding.UTF8.GetBytes($"{response.GetStatusCode()} {response.GetMeta()}\r\n");
+
+            byte[] message = Encoding.UTF8.GetBytes(body);
+
+            var payload = header.Concat(message).ToArray();
+            sslStream.Write(payload);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("error:");
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            Console.WriteLine("closing stream");
+            sslStream.Close();
+            sslStream.Flush();
+        }
+
+        Console.WriteLine("closing client");
+        stream.Close();
+        stream.Dispose();
+        client.Close();
+        client.Dispose();
+    }
+
     private static bool ValidateCertificate(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
     {
         // If you want to trust any certificate, return true
