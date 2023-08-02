@@ -26,12 +26,15 @@ internal class FrontPageHandler
             .AppendLine()
             .AppendLine();
 
+        sb.AppendLine("## posts");
+        
         var posts = _posts
             .GetTopPosts();
 
         foreach (var post in posts)
         {
-            sb.AppendLine($"## {post.Title}");
+            sb.AppendLine($"### {post.Title}");
+            sb.AppendLine($"Posted by {post.postedByUser}.");
             sb.AppendLine($"=> {post.Link} Follow link");
             sb.AppendLine();
         }

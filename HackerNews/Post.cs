@@ -1,3 +1,3 @@
 namespace HackerNews;
 
-internal record Post(string Title, string Link);
+internal record Post(string Title, string Link, string postedByUser);
