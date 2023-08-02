@@ -10,15 +10,21 @@ class MyTcpListener
 {
     public static void Main()
     {
-        var certPath = "cert/mycert.pfx";
-
-        X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
 
         var requestHandler = new RequestHandler();
         requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
         requestHandler.RegisterHandler("/input", req => new InputResponse("test input"));
         requestHandler.RegisterHandler("/test-redirect", req => new RedirectResponse("/redirect-works"));
         requestHandler.RegisterHandler("/redirect-works", request => new SuccessResponse("redirect works"));
+        
+        var certPath = "cert/mycert.pfx";
+
+        Start(certPath, requestHandler);
+    }
+
+    private static void Start(string certPath, RequestHandler requestHandler)
+    {
+        X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
 
         TcpListener server = null;
         try
