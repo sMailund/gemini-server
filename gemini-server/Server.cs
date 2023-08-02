@@ -9,18 +9,18 @@ namespace gemini_server;
 
 public class Server
 {
-    public Server(X509Certificate2 certificate, int port, IPAddress ipAddress, RequestHandler requestHandler)
+    public Server(X509Certificate2 certificate, int port, IPAddress ipAddress, RequestRouter requestRouter)
     {
         _certificate = certificate;
         _port = port;
         _ipAddress = ipAddress;
-        _requestHandler = requestHandler;
+        _requestRouter = requestRouter;
     }
 
     private readonly X509Certificate2 _certificate;
     private readonly int _port;
     private readonly IPAddress _ipAddress;
-    private readonly RequestHandler _requestHandler;
+    private readonly RequestRouter _requestRouter;
 
     public void Start()
     {
@@ -108,7 +108,7 @@ public class Server
                 UserName = userName ?? ""
             };
 
-            var response = _requestHandler.HandleRequest(request);
+            var response = _requestRouter.HandleRequest(request);
 
             var body = "";
             if (response is SuccessResponse)

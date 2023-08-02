@@ -2,7 +2,7 @@ using gemini_server.Responses;
 
 namespace gemini_server;
 
-public class RequestHandler
+public class RequestRouter
 {
     private Dictionary<string, Func<Request, IResponse>> _handlers = new();
     

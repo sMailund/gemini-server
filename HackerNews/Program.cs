@@ -22,7 +22,7 @@ var posts = new List<Post>()
     new Post("This is another post"),
 };
 
-var requestHandler = new RequestHandler();
+var requestHandler = new RequestRouter();
 requestHandler.RegisterHandler("/", req => new FrontPageHandler().Handle(req));
 
 var server = new Server(serverCertificate, port, ipAddress, requestHandler);

@@ -11,7 +11,7 @@ class MyTcpListener
     public static void Main()
     {
 
-        var requestHandler = new RequestHandler();
+        var requestHandler = new RequestRouter();
         requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
         requestHandler.RegisterHandler("/input", req => new InputResponse("test input"));
         requestHandler.RegisterHandler("/test-redirect", req => new RedirectResponse("/redirect-works"));
@@ -22,7 +22,7 @@ class MyTcpListener
         Start(certPath, requestHandler);
     }
 
-    private static void Start(string certPath, RequestHandler requestHandler)
+    private static void Start(string certPath, RequestRouter requestRouter)
     {
         X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
 
@@ -48,7 +48,7 @@ class MyTcpListener
                 // Perform a blocking call to accept requests.
                 // You could also use server.AcceptSocket() here.
                 var client = server.AcceptTcpClient();
-                new Thread(() => HandleRequest(client, serverCertificate, requestHandler))
+                new Thread(() => HandleRequest(client, serverCertificate, requestRouter))
                     .Start();
             }
         }
@@ -66,7 +66,7 @@ class MyTcpListener
     }
 
     private static void HandleRequest(TcpClient client, X509Certificate2 serverCertificate,
-        RequestHandler requestHandler)
+        RequestRouter requestRouter)
     {
         var readBuffer = new byte[1024];
         Console.WriteLine("Connected!");
@@ -105,7 +105,7 @@ class MyTcpListener
                 Uri = uri
             };
 
-            var response = requestHandler.HandleRequest(request);
+            var response = requestRouter.HandleRequest(request);
 
             var body = "";
             if (response is SuccessResponse)
