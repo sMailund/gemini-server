@@ -6,7 +6,7 @@ using gemini_server;
 using gemini_server.Responses;
 
 var requestHandler = new RequestHandler();
-requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
+requestHandler.RegisterHandler("/test", req => new SuccessResponse($"handler works!!! And your name is {req.UserName}"));
 requestHandler.RegisterHandler("/input", req => new InputResponse("test input"));
 requestHandler.RegisterHandler("/test-redirect", req => new RedirectResponse("/redirect-works"));
 requestHandler.RegisterHandler("/redirect-works", request => new SuccessResponse("redirect works"));
