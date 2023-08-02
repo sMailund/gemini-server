@@ -8,12 +8,17 @@ using gemini_server.Responses;
 
 class MyTcpListener
 {
-    
     public static void Main()
     {
         var certPath = "cert/mycert.pfx";
 
         X509Certificate2 serverCertificate = new X509Certificate2(certPath, "asdf");
+
+        var requestHandler = new RequestHandler();
+        requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
+        requestHandler.RegisterHandler("/input", req => new InputResponse("test input"));
+        requestHandler.RegisterHandler("/test-redirect", req => new RedirectResponse("/redirect-works"));
+        requestHandler.RegisterHandler("/redirect-works", request => new SuccessResponse("redirect works"));
 
         TcpListener server = null;
         try
@@ -28,13 +33,6 @@ class MyTcpListener
             // Start listening for client requests.
             server.Start();
 
-            var requestHandler = new RequestHandler();
-
-            requestHandler.RegisterHandler("/test", req => new SuccessResponse("handler works"));
-            requestHandler.RegisterHandler("/input", req => new InputResponse("test input"));
-            requestHandler.RegisterHandler("/test-redirect", req => new RedirectResponse("/redirect-works"));
-            requestHandler.RegisterHandler("/redirect-works", request => new SuccessResponse("redirect works"));
-            
 
             // Enter the listening loop.
             while (true)
@@ -61,7 +59,8 @@ class MyTcpListener
         Console.Read();
     }
 
-    private static void HandleRequest(TcpClient client, X509Certificate2 serverCertificate, RequestHandler requestHandler)
+    private static void HandleRequest(TcpClient client, X509Certificate2 serverCertificate,
+        RequestHandler requestHandler)
     {
         var readBuffer = new byte[1024];
         Console.WriteLine("Connected!");
@@ -134,7 +133,8 @@ class MyTcpListener
         client.Dispose();
     }
 
-    private static bool ValidateCertificate(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
+    private static bool ValidateCertificate(object sender, X509Certificate? certificate, X509Chain? chain,
+        SslPolicyErrors sslPolicyErrors)
     {
         // If you want to trust any certificate, return true
         // This essentially disables certificate validation.
@@ -146,5 +146,4 @@ class MyTcpListener
         // Example:
         // return certificate.GetCertHashString() == "YOUR_CERT_THUMBPRINT";
     }
-
 }
