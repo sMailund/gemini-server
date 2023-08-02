@@ -20,19 +20,19 @@ internal class FrontPageHandler
             ? $"Welcome back, {req.UserName}!"
             : "Welcome to Gemtalk! Please log in to join the discussion.";
 
-        var formattedPosts = _posts
-            .GetTopPosts()
-            .Select(it => $"## {it.Title}");
-
         var sb = new StringBuilder()
             .AppendLine("# gemtalk")
             .AppendLine(greeting)
             .AppendLine()
             .AppendLine();
 
-        foreach (var post in formattedPosts)
+        var posts = _posts
+            .GetTopPosts();
+
+        foreach (var post in posts)
         {
-            sb.AppendLine(post);
+            sb.AppendLine($"## {post.Title}");
+            sb.AppendLine($"=> {post.Link} Follow link");
             sb.AppendLine();
         }
 

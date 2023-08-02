@@ -24,8 +24,8 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
 
 // initialize repository with dummy data
 var postRepository = serviceProvider.GetRequiredService<IPostRepository>();
-postRepository.AddNewPost( new Post("This is a test post") );
-postRepository.AddNewPost( new Post("This is another post") );
+postRepository.AddNewPost(new Post("gemini project main page", "gemini.circumlunar.space"));
+postRepository.AddNewPost(new Post("amfora wiki", "makerworld.space/amfora-wiki"));
 
 
 var requestHandler = new RequestRouter();
