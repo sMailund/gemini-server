@@ -16,29 +16,40 @@ internal class FrontPageHandler
 
     public IResponse Handle(Request req)
     {
-        var greeting = req.IsLoggedIn
-            ? $"Welcome back, {req.UserName}!"
-            : "Welcome to Gemtalk! Please log in to join the discussion.";
-
         var sb = new StringBuilder()
-            .AppendLine("# gemtalk")
-            .AppendLine(greeting)
+            .AppendLine("# gemtalk");
+
+        AppendGreeting(sb, req)
             .AppendLine()
             .AppendLine();
 
+
         sb.AppendLine("## posts");
-        
+
         var posts = _posts
             .GetTopPosts();
 
         foreach (var post in posts)
         {
             sb.AppendLine($"### {post.Title}");
-            sb.AppendLine($"Posted by {post.postedByUser}.");
+            sb.AppendLine($"Posted by {post.PostedByUser}.");
             sb.AppendLine($"=> {post.Link} Follow link");
             sb.AppendLine();
         }
 
         return new SuccessResponse(sb.ToString());
+    }
+
+    private static StringBuilder AppendGreeting(StringBuilder sb, Request req)
+    {
+        if (!req.IsLoggedIn)
+        {
+            return sb.AppendLine("Welcome to Gemtalk! Please log in to join the discussion.");
+        }
+
+        sb.AppendLine($"Welcome back, {req.UserName}!")
+            .AppendLine("=> /create-post Create a new post");
+
+        return sb;
     }
 }

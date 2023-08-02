@@ -1,3 +1,5 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace HackerNews;
 
-internal record Post(string Title, string Link, string postedByUser);
+internal record Post(string Title, string Link, string PostedByUser, Guid PostId);

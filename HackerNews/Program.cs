@@ -18,19 +18,27 @@ var ipAddress = IPAddress.Parse("127.0.0.1");
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddSingleton<IPostRepository, InMemoryPostRepository>();
 serviceCollection.AddScoped<FrontPageHandler>();
+serviceCollection.AddScoped<CreatePostHandler>();
 
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
 
 // initialize repository with dummy data
 var postRepository = serviceProvider.GetRequiredService<IPostRepository>();
-postRepository.AddNewPost(new Post("gemini project main page", "gemini://gemini.circumlunar.space", "mailund"));
-postRepository.AddNewPost(new Post("amfora wiki", "gemini://makeworld.space/amfora-wiki", "mailund"));
+postRepository.AddNewPost(new Post("gemini project main page", "gemini://gemini.circumlunar.space", "mailund",
+    Guid.NewGuid()));
+postRepository.AddNewPost(new Post("amfora wiki", "gemini://makeworld.space/amfora-wiki", "mailund", Guid.NewGuid()));
 
 
 var requestHandler = new RequestRouter();
 requestHandler.RegisterHandler("/", req => serviceProvider.GetRequiredService<FrontPageHandler>().Handle(req));
+requestHandler.RegisterHandler("/create-post",
+    req => serviceProvider.GetRequiredService<CreatePostHandler>().Handle(req));
 
 var server = new Server(serverCertificate, port, ipAddress, requestHandler);
 
 server.Start();
+
+
+// TODO: make sure usernames cannot be duplicated
+// TODO: make sure submitted content cannot contain malicious payloads
