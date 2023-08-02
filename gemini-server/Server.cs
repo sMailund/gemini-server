@@ -86,7 +86,7 @@ public class Server
             Console.WriteLine("path: " + uri.LocalPath);
             Console.WriteLine("query: " + uri.Query);
 
-            string userName = null;
+            string? userName = null;
 
             // Check if the handshake was successful and the client certificate is available
             if (sslStream is { IsAuthenticated: true, RemoteCertificate: not null })
