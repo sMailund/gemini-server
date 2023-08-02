@@ -52,11 +52,12 @@ class MyTcpListener
                     Console.WriteLine("Connected!");
                     var stream = client.GetStream();
                     SslStream sslStream = new SslStream(
-                        stream, false);
+                        stream, false, ValidateCertificate);
                     try
                     {
-                        sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: false,
+                        sslStream.AuthenticateAsServer(serverCertificate, clientCertificateRequired: true,
                             checkCertificateRevocation: true);
+                        
                         
                         sslStream.Read(readBuffer, 0, 1024); 
                         var uriString = Encoding.UTF8.GetString(readBuffer, 0, 1024)
@@ -69,6 +70,15 @@ class MyTcpListener
                         Console.WriteLine("authenticated");
                         Console.WriteLine("path: " + uri.LocalPath);
                         Console.WriteLine("query: " + uri.Query);
+
+                        
+                        // Check if the handshake was successful and the client certificate is available
+                        if (sslStream is { IsAuthenticated: true, RemoteCertificate: not null })
+                        {
+                            Console.WriteLine("reading client certificate...");
+                            var clientCertificate = new X509Certificate2(sslStream.RemoteCertificate);
+                            Console.WriteLine("Client certificate: " + clientCertificate.Subject);
+                        }
 
                         var request = new Request()
                         {
@@ -122,6 +132,19 @@ class MyTcpListener
 
         Console.WriteLine("\nHit enter to continue...");
         Console.Read();
+    }
+    
+    private static bool ValidateCertificate(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
+    {
+        // If you want to trust any certificate, return true
+        // This essentially disables certificate validation.
+        return true;
+
+        // If you want to trust only specific self-signed certificates,
+        // you can add additional checks here, such as checking the
+        // certificate's thumbprint or Common Name (CN).
+        // Example:
+        // return certificate.GetCertHashString() == "YOUR_CERT_THUMBPRINT";
     }
 
 }
