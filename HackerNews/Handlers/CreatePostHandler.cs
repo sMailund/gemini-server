@@ -48,8 +48,11 @@ internal class CreatePostHandler
             };
         }
 
-        var link = Uri.UnescapeDataString(parts[0][1..]).Replace(" ", "%20");
-        
+        var link = Uri.UnescapeDataString( // unescape all special characters for the url to be formatted properly
+            parts[0] // only get the uri part
+                [1..] // remove the '?' at the beginning
+        ).Replace(" ", "%20"); // but re-escape the <space> so that the link is formatted correctly in gemtext
+
         var title = string.Join(" ", parts, 1, parts.Length - 1);
         var postId = Guid.NewGuid();
         var post = new Post(title, link, req.UserName, postId, req.UserThumbprint);
