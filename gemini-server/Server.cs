@@ -87,13 +87,14 @@ public class Server
             Console.WriteLine("query: " + uri.Query);
 
             string? userName = null;
-
+            string? thumbprint = null;
             // Check if the handshake was successful and the client certificate is available
             if (sslStream is { IsAuthenticated: true, RemoteCertificate: not null })
             {
                 Console.WriteLine("reading client certificate...");
                 var clientCertificate = new X509Certificate2(sslStream.RemoteCertificate);
                 Console.WriteLine("Client certificate: " + clientCertificate.Subject);
+                thumbprint = clientCertificate.Thumbprint;
 
                 userName = clientCertificate.SubjectName
                     .EnumerateRelativeDistinguishedNames()
@@ -105,7 +106,8 @@ public class Server
             {
                 Uri = uri,
                 IsLoggedIn = userName is not null,
-                UserName = userName ?? ""
+                UserName = userName ?? "",
+                UserThumbprint = thumbprint
             };
 
             var response = _requestRouter.HandleRequest(request);
