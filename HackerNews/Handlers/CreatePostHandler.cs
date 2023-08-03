@@ -23,7 +23,7 @@ internal class CreatePostHandler
                 Reason = "You need to be a logged in user in order to post"
             };
         }
-        
+
         var query = req.Uri.Query;
 
         if (query.Equals(""))
@@ -47,8 +47,11 @@ internal class CreatePostHandler
                 Reason = "Certificate subject name or certificate thumbprint can not be null"
             };
         }
+
+        var link = parts[0] // only URI
+            [1..] // remove ? from beginning
+            .Replace("%2F", "/"); // decode encoded '/'s
         
-        var link = parts[0];
         var title = string.Join(" ", parts, 1, parts.Length - 1);
         var postId = Guid.NewGuid();
         var post = new Post(title, link, req.UserName, postId, req.UserThumbprint);
