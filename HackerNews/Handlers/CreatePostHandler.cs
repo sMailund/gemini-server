@@ -1,6 +1,7 @@
 using System.Web;
 using gemini_server;
 using gemini_server.Responses;
+using HackerNews.Guards;
 using HackerNews.Repositories;
 
 namespace HackerNews.Handlers;
@@ -16,12 +17,10 @@ internal class CreatePostHandler
 
     public IResponse Handle(Request req)
     {
-        if (!req.IsLoggedIn)
+        var error = AssertUserNotNull.Assert(req);
+        if (error is not null)
         {
-            return new BadRequestResponse
-            {
-                Reason = "You need to be a logged in user in order to post"
-            };
+            return error;
         }
 
         var query = req.Uri.Query;
@@ -37,14 +36,6 @@ internal class CreatePostHandler
             return new BadRequestResponse
             {
                 Reason = "Submission must contain both link and title"
-            };
-        }
-
-        if (req.UserName is null || req.UserThumbprint is null)
-        {
-            return new BadRequestResponse
-            {
-                Reason = "Certificate subject name or certificate thumbprint can not be null"
             };
         }
 
