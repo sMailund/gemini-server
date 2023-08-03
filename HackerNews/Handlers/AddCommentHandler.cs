@@ -49,14 +49,17 @@ internal class AddCommentHandler
             return new NotFoundResponse();
         }
         
-        var query = req.Uri.Query;
+        var query = req
+            .Uri
+            .Query
+            .Trim('?');
 
         if (query.Equals(""))
         {
             return new InputResponse("Enter your comment");
         }
         
-        post.AddComment(req.UserName, req.UserThumbprint, query);
+        post.AddComment(req.UserName, req.UserThumbprint, Uri.UnescapeDataString(query));
         return new RedirectResponse($"/view-post?{postId.ToString()}");
     }
 }
