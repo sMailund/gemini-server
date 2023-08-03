@@ -7,6 +7,7 @@ using HackerNews;
 using HackerNews.Handlers;
 using HackerNews.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var certPath = "cert/mycert.pfx";
 var serverCertificate = new X509Certificate2(certPath, "asdf");
@@ -22,6 +23,7 @@ serviceCollection.AddScoped<CreatePostHandler>();
 serviceCollection.AddScoped<ViewPostHandler>();
 serviceCollection.AddScoped<UpvotePostHandler>();
 serviceCollection.AddScoped<DownvotePostHandler>();
+serviceCollection.AddScoped<AddCommentHandler>();
 
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -40,6 +42,7 @@ requestHandler.RegisterHandler("/create-post", req => serviceProvider.GetRequire
 requestHandler.RegisterHandler("/view-post", req => serviceProvider.GetRequiredService<ViewPostHandler>().Handle(req));
 requestHandler.RegisterHandler("/upvote-post", req => serviceProvider.GetRequiredService<UpvotePostHandler>().Handle(req));
 requestHandler.RegisterHandler("/downvote-post", req => serviceProvider.GetRequiredService<DownvotePostHandler>().Handle(req));
+requestHandler.RegisterHandler("/add-comment/*/", req => serviceProvider.GetRequiredService<AddCommentHandler>().Handle(req));
 
 var server = new Server(serverCertificate, port, ipAddress, requestHandler);
 

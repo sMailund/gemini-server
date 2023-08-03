@@ -29,7 +29,11 @@ public class RequestRouter
 
     private bool IsMatchingRoute(string requestPath, string route)
     {
-        var requestSegments = requestPath.Trim('/').Split('/');
+        var requestSegments = requestPath
+            .Split("?")[0]
+            .Trim('/')
+            .Split('/');
+        
         var routeSegments = route.Trim('/').Split('/');
 
         if (requestSegments.Length != routeSegments.Length)

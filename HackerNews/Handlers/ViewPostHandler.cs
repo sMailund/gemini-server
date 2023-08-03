@@ -32,6 +32,7 @@ internal class ViewPostHandler
         if (req.IsLoggedIn)
         {
             var thumbprint = req.UserThumbprint;
+            sb.AppendLine($"=> /add-comment/{post.PostId}/ Add comment");
             sb.AppendLine(
                 $"=> /upvote-post?{post.PostId} Upvote post " + (post.UserHasUpvoted(thumbprint) ? "[x]" : ""));
             sb.AppendLine($"=> /downvote-post?{post.PostId} Downvote post " + (post.UserHasDownvoted(thumbprint) ? "[x]" : ""));
