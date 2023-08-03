@@ -26,7 +26,7 @@ internal class Post
     }
 
     public void AddComment(string userName, string userId, string text) 
-        => Comments.Insert(0, new Comment(userName, userId, text));
+        => Comments.Insert(0, new Comment(userName, userId, text, DateTime.Now));
 
     public bool UserHasUpvoted(string userId) => _upvotedBy.Contains(userId);
     
@@ -48,5 +48,3 @@ internal class Post
     private readonly HashSet<string> _downvotedBy = new();
 
 }
-
-public record Comment(string UserName, string UserId, string Text);

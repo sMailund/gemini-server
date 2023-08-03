@@ -35,10 +35,31 @@ internal class ViewPostHandler
             sb.AppendLine($"=> /add-comment/{post.PostId}/ Add comment");
             sb.AppendLine(
                 $"=> /upvote-post?{post.PostId} Upvote post " + (post.UserHasUpvoted(thumbprint) ? "[x]" : ""));
-            sb.AppendLine($"=> /downvote-post?{post.PostId} Downvote post " + (post.UserHasDownvoted(thumbprint) ? "[x]" : ""));
+            sb.AppendLine($"=> /downvote-post?{post.PostId} Downvote post " +
+                          (post.UserHasDownvoted(thumbprint) ? "[x]" : ""));
         }
 
-        sb.AppendLine($"=> {post.Link} Follow link");
+        sb.AppendLine($"=> {post.Link} Follow link")
+            .AppendLine()
+            .AppendLine();
+
+        sb.AppendLine("## comments");
+
+        var postComments = post.Comments;
+        if (postComments.Count > 0)
+        {
+            foreach (var comment in postComments)
+            {
+                sb.AppendLine($"### {comment.UserName} ({comment.CreatedAt})")
+                    .AppendLine($"> {comment.Text}")
+                    .AppendLine();
+            }
+        }
+        else
+        {
+            sb.AppendLine("No comments.");
+        }
+
 
         return new SuccessResponse(sb.ToString());
     }
