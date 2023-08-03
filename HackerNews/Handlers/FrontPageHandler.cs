@@ -35,7 +35,7 @@ internal class FrontPageHandler
             sb.AppendLine($"Posted by {post.PostedByUser} at {post.PostedAt.ToString()}.");
             sb.AppendLine($"{post.Points} point(s).");
             sb.AppendLine($"=> {post.Link} Follow link");
-            sb.AppendLine($"=> /view-post?{post.PostId} View ({post.Comments.Count}) comment(s)");
+            sb.AppendLine($"=> /view-post?{post.PostId} View {post.Comments.Count} comment(s)");
             
             if (req.IsLoggedIn)
             {
@@ -54,7 +54,7 @@ internal class FrontPageHandler
     {
         if (!req.IsLoggedIn)
         {
-            return sb.AppendLine("Welcome to Gemtalk! Please log in to join the discussion.");
+            return sb.AppendLine("Welcome to Gemtalk! Provide a client certificate to join the discussion.");
         }
 
         sb.AppendLine($"Welcome back, {req.UserName}!")
