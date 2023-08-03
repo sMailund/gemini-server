@@ -4,8 +4,8 @@ internal class InMemoryPostRepository : IPostRepository
 {
     private readonly List<Post> _posts = new List<Post>();
 
-    public List<Post> GetTopPosts() => _posts
-        .Take(10)
+    public List<Post> GetTopPosts(int limit) => _posts
+        .Take(limit)
         .ToList();
 
     public void AddNewPost(Post post) => _posts.Add(post);

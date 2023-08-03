@@ -27,7 +27,7 @@ internal class FrontPageHandler
         sb.AppendLine("## posts");
 
         var posts = _posts
-            .GetTopPosts();
+            .GetTopPosts(10);
 
         foreach (var post in posts)
         {
