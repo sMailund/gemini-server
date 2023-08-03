@@ -19,6 +19,7 @@ var serviceCollection = new ServiceCollection();
 serviceCollection.AddSingleton<IPostRepository, InMemoryPostRepository>();
 serviceCollection.AddScoped<FrontPageHandler>();
 serviceCollection.AddScoped<CreatePostHandler>();
+serviceCollection.AddScoped<ViewPostHandler>();
 
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -26,14 +27,15 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
 // initialize repository with dummy data
 var postRepository = serviceProvider.GetRequiredService<IPostRepository>();
 postRepository.AddNewPost(new Post("gemini project main page", "gemini://gemini.circumlunar.space", "mailund",
-    Guid.NewGuid()));
-postRepository.AddNewPost(new Post("amfora wiki", "gemini://makeworld.space/amfora-wiki", "mailund", Guid.NewGuid()));
+    Guid.NewGuid(), Guid.NewGuid().ToString()));
+postRepository.AddNewPost(new Post("amfora wiki", "gemini://makeworld.space/amfora-wiki", "mailund", Guid.NewGuid(),
+    Guid.NewGuid().ToString()));
 
 
 var requestHandler = new RequestRouter();
 requestHandler.RegisterHandler("/", req => serviceProvider.GetRequiredService<FrontPageHandler>().Handle(req));
-requestHandler.RegisterHandler("/create-post",
-    req => serviceProvider.GetRequiredService<CreatePostHandler>().Handle(req));
+requestHandler.RegisterHandler("/create-post", req => serviceProvider.GetRequiredService<CreatePostHandler>().Handle(req));
+requestHandler.RegisterHandler("/view-post", req => serviceProvider.GetRequiredService<ViewPostHandler>().Handle(req));
 
 var server = new Server(serverCertificate, port, ipAddress, requestHandler);
 

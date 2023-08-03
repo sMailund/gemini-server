@@ -31,7 +31,7 @@ internal class CreatePostHandler
             return new InputResponse("Enter your URI, followed by your title");
         }
 
-        var parts = query.Split(" ");
+        var parts = query.Split("%20");
         if (parts.Length < 2)
         {
             return new BadRequestResponse
@@ -39,14 +39,22 @@ internal class CreatePostHandler
                 Reason = "Submission must contain both link and title"
             };
         }
+
+        if (req.UserName is null || req.UserThumbprint is null)
+        {
+            return new BadRequestResponse
+            {
+                Reason = "Certificate subject name or certificate thumbprint can not be null"
+            };
+        }
         
         var link = parts[0];
         var title = string.Join(" ", parts, 1, parts.Length - 1);
         var postId = Guid.NewGuid();
-        var post = new Post(title, link, req.UserName, postId);
+        var post = new Post(title, link, req.UserName, postId, req.UserThumbprint);
         _posts.AddNewPost(post);
 
         // TODO: handle post
-        return new RedirectResponse($"posts?{postId.ToString()}");
+        return new RedirectResponse($"/view-post?{postId.ToString()}");
     }
 }

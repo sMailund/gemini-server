@@ -4,4 +4,5 @@ internal interface IPostRepository
 {
     List<Post> GetTopPosts();
     void AddNewPost(Post post);
+    Post? GetPostById(Guid postId);
 }

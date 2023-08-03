@@ -10,4 +10,6 @@ internal class InMemoryPostRepository : IPostRepository
 
     public void AddNewPost(Post post) => _posts.Add(post);
 
+    public Post? GetPostById(Guid postId) => _posts.FirstOrDefault(it => it.PostId.Equals(postId));
+
 }
