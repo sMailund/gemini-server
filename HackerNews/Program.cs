@@ -20,6 +20,8 @@ serviceCollection.AddSingleton<IPostRepository, InMemoryPostRepository>();
 serviceCollection.AddScoped<FrontPageHandler>();
 serviceCollection.AddScoped<CreatePostHandler>();
 serviceCollection.AddScoped<ViewPostHandler>();
+serviceCollection.AddScoped<UpvotePostHandler>();
+serviceCollection.AddScoped<DownvotePostHandler>();
 
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
@@ -36,6 +38,8 @@ var requestHandler = new RequestRouter();
 requestHandler.RegisterHandler("/", req => serviceProvider.GetRequiredService<FrontPageHandler>().Handle(req));
 requestHandler.RegisterHandler("/create-post", req => serviceProvider.GetRequiredService<CreatePostHandler>().Handle(req));
 requestHandler.RegisterHandler("/view-post", req => serviceProvider.GetRequiredService<ViewPostHandler>().Handle(req));
+requestHandler.RegisterHandler("/upvote-post", req => serviceProvider.GetRequiredService<UpvotePostHandler>().Handle(req));
+requestHandler.RegisterHandler("/downvote-post", req => serviceProvider.GetRequiredService<DownvotePostHandler>().Handle(req));
 
 var server = new Server(serverCertificate, port, ipAddress, requestHandler);
 
