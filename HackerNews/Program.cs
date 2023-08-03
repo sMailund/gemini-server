@@ -27,9 +27,9 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
 // initialize repository with dummy data
 var postRepository = serviceProvider.GetRequiredService<IPostRepository>();
 postRepository.AddNewPost(new Post("gemini project main page", "gemini://gemini.circumlunar.space", "mailund",
-    Guid.NewGuid(), Guid.NewGuid().ToString(), DateTime.Now.AddDays(-1), 1337));
+    Guid.NewGuid(), Guid.NewGuid().ToString(), DateTime.Now.AddDays(-1)));
 postRepository.AddNewPost(new Post("amfora wiki", "gemini://makeworld.space/amfora-wiki", "mailund", Guid.NewGuid(),
-    Guid.NewGuid().ToString(), DateTime.Now.AddHours(-4), 50));
+    Guid.NewGuid().ToString(), DateTime.Now.AddHours(-4)));
 
 
 var requestHandler = new RequestRouter();
