@@ -55,10 +55,9 @@ internal class CreatePostHandler
 
         var title = string.Join(" ", parts, 1, parts.Length - 1);
         var postId = Guid.NewGuid();
-        var post = new Post(title, link, req.UserName, postId, req.UserThumbprint);
+        var post = new Post(title, link, req.UserName, postId, req.UserThumbprint, DateTime.Now);
         _posts.AddNewPost(post);
 
-        // TODO: handle post
         return new RedirectResponse($"/view-post?{postId.ToString()}");
     }
 }
