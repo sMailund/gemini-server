@@ -25,6 +25,9 @@ internal class Post
         _upvotedBy.Remove(userId);
     }
 
+    public void AddComment(string userName, string userId, string text) 
+        => Comments.Insert(0, new Comment(userName, userId, text));
+
     public bool UserHasUpvoted(string userId) => _upvotedBy.Contains(userId);
     
     public bool UserHasDownvoted(string userId) => _downvotedBy.Contains(userId);
@@ -37,9 +40,13 @@ internal class Post
     public Guid PostId { get; init; }
     public string PostedByUserId { get; init; }
     public DateTime PostedAt { get; init; }
+    
+    public List<Comment> Comments { get; } = new();
 
     private readonly HashSet<string> _upvotedBy = new();
     
     private readonly HashSet<string> _downvotedBy = new();
 
 }
+
+public record Comment(string UserName, string UserId, string Text);
