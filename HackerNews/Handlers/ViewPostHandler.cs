@@ -8,7 +8,6 @@ namespace HackerNews.Handlers;
 
 internal class ViewPostHandler
 {
-    
     private readonly IPostRepository _posts;
 
     public ViewPostHandler(IPostRepository posts)
@@ -26,10 +25,20 @@ internal class ViewPostHandler
 
         var sb = new StringBuilder()
             .AppendLine($"# {post.Title}")
-            .AppendLine($"posted by {post.PostedByUser} ({post.PostedByUserId})")
-            .AppendLine($"=> {post.Link} Follow link");
-        
+            .AppendLine($"Posted by {post.PostedByUser}")
+            .AppendLine($"({post.Points}) point(s)")
+            .AppendLine();
+
+        if (req.IsLoggedIn)
+        {
+            var thumbprint = req.UserThumbprint;
+            sb.AppendLine(
+                $"=> /upvote-post?{post.PostId} Upvote post " + (post.UserHasUpvoted(thumbprint) ? "[x]" : ""));
+            sb.AppendLine($"=> /downvote-post?{post.PostId} Downvote post " + (post.UserHasDownvoted(thumbprint) ? "[x]" : ""));
+        }
+
+        sb.AppendLine($"=> {post.Link} Follow link");
+
         return new SuccessResponse(sb.ToString());
     }
-    
 }
