@@ -60,6 +60,11 @@ internal class ViewPostHandler
             sb.AppendLine("No comments.");
         }
 
+        sb.AppendLine();
+        sb.AppendLine();
+        sb.AppendLine();
+        sb.AppendLine("=> / go to frontpage");
+
 
         return new SuccessResponse(sb.ToString());
     }
