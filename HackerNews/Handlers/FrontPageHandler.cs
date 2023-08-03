@@ -33,7 +33,10 @@ internal class FrontPageHandler
         {
             sb.AppendLine($"### {post.Title}");
             sb.AppendLine($"Posted by {post.PostedByUser}.");
+            sb.AppendLine($"[{post.Points}] point(s).");
             sb.AppendLine($"=> {post.Link} Follow link");
+            sb.AppendLine($"=> /upvote-post?{post.PostId} Upvote post");
+            sb.AppendLine($"=> /downvote-post?{post.PostId} Downvote post");
             sb.AppendLine();
         }
 
