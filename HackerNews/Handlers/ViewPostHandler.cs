@@ -1,3 +1,4 @@
+using System.Text;
 using gemini_server;
 using gemini_server.Responses;
 using HackerNews.Repositories;
@@ -37,7 +38,12 @@ internal class ViewPostHandler
             return new NotFoundResponse();
         }
 
-        return new SuccessResponse($"# {post.Title}");
+        var sb = new StringBuilder()
+            .AppendLine($"# {post.Title}")
+            .AppendLine($"posted by {post.PostedByUser} ({post.PostedByUserId})")
+            .AppendLine($"=> {post.Link} Follow link");
+        
+        return new SuccessResponse(sb.ToString());
     }
     
 }

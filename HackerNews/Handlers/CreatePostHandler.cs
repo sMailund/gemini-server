@@ -48,9 +48,7 @@ internal class CreatePostHandler
             };
         }
 
-        var link = parts[0] // only URI
-            [1..] // remove ? from beginning
-            .Replace("%2F", "/"); // decode encoded '/'s
+        var link = Uri.UnescapeDataString(parts[0][1..]).Replace(" ", "%20");
         
         var title = string.Join(" ", parts, 1, parts.Length - 1);
         var postId = Guid.NewGuid();
