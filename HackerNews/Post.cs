@@ -4,15 +4,15 @@ namespace HackerNews;
 
 internal class Post
 {
-    public Post(string Title, string Link, string PostedByUser, Guid PostId, string PostedByUserId, DateTime PostedAt, int Points)
+    public Post(string title, string link, string postedByUser, Guid postId, string postedByUserId, DateTime postedAt, int points)
     {
-        this.Title = Title;
-        this.Link = Link;
-        this.PostedByUser = PostedByUser;
-        this.PostId = PostId;
-        this.PostedByUserId = PostedByUserId;
-        this.PostedAt = PostedAt;
-        this.Points = Points;
+        Title = title;
+        Link = link;
+        PostedByUser = postedByUser;
+        PostId = postId;
+        PostedByUserId = postedByUserId;
+        PostedAt = postedAt;
+        Points = points;
     }
 
     public string Title { get; init; }
@@ -23,14 +23,14 @@ internal class Post
     public DateTime PostedAt { get; init; }
     public int Points { get; init; }
 
-    public void Deconstruct(out string Title, out string Link, out string PostedByUser, out Guid PostId, out string PostedByUserId, out DateTime PostedAt, out int Points)
+    public void Deconstruct(out string title, out string link, out string postedByUser, out Guid postId, out string postedByUserId, out DateTime postedAt, out int points)
     {
-        Title = this.Title;
-        Link = this.Link;
-        PostedByUser = this.PostedByUser;
-        PostId = this.PostId;
-        PostedByUserId = this.PostedByUserId;
-        PostedAt = this.PostedAt;
-        Points = this.Points;
+        title = Title;
+        link = Link;
+        postedByUser = PostedByUser;
+        postId = PostId;
+        postedByUserId = PostedByUserId;
+        postedAt = PostedAt;
+        points = Points;
     }
 }
