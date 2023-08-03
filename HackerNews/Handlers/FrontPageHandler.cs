@@ -32,8 +32,8 @@ internal class FrontPageHandler
         foreach (var post in posts)
         {
             sb.AppendLine($"### {post.Title}");
-            sb.AppendLine($"Posted by {post.PostedByUser}.");
-            sb.AppendLine($"[{post.Points}] point(s).");
+            sb.AppendLine($"Posted by {post.PostedByUser} at {post.PostedAt.ToString()}.");
+            sb.AppendLine($"({post.Points}) point(s).");
             sb.AppendLine($"=> {post.Link} Follow link");
             
             if (req.IsLoggedIn)
