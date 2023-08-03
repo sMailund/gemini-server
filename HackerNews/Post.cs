@@ -24,6 +24,10 @@ internal class Post
         _downvotedBy.Add(userId);
         _upvotedBy.Remove(userId);
     }
+
+    public bool UserHasUpvoted(string userId) => _upvotedBy.Contains(userId);
+    
+    public bool UserHasDownvoted(string userId) => _downvotedBy.Contains(userId);
     
     public int Points => _upvotedBy.Count - _downvotedBy.Count;
 

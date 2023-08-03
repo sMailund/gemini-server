@@ -35,8 +35,14 @@ internal class FrontPageHandler
             sb.AppendLine($"Posted by {post.PostedByUser}.");
             sb.AppendLine($"[{post.Points}] point(s).");
             sb.AppendLine($"=> {post.Link} Follow link");
-            sb.AppendLine($"=> /upvote-post?{post.PostId} Upvote post");
-            sb.AppendLine($"=> /downvote-post?{post.PostId} Downvote post");
+            
+            if (req.IsLoggedIn)
+            {
+                var thumbprint = req.UserThumbprint;
+                sb.AppendLine($"=> /upvote-post?{post.PostId} Upvote post " + (post.UserHasUpvoted(thumbprint) ? "[x]" : ""));
+                sb.AppendLine($"=> /downvote-post?{post.PostId} Downvote post " + (post.UserHasDownvoted(thumbprint) ? "[x]" : ""));
+            }
+
             sb.AppendLine();
         }
 
