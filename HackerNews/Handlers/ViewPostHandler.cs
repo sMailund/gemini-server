@@ -26,7 +26,7 @@ internal class ViewPostHandler
         var sb = new StringBuilder()
             .AppendLine($"# {post.Title}")
             .AppendLine($"Posted by {post.PostedByUser}")
-            .AppendLine($"({post.Points}) point(s)")
+            .AppendLine($"{post.Points} point(s)")
             .AppendLine();
 
         if (req.IsLoggedIn)
